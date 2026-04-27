@@ -1,0 +1,27 @@
+%{
+#include <stdio.h>
+%}
+%s B C D DEAD
+%%
+<INITIAL>[0-9]+ BEGIN B;
+<INITIAL>[O-9]+.[0-9] BEGIN C;
+<INITIAL>[a-zA-Z_][a-zA-Z0-9_]* BEGIN D;
+<B>[^\n] BEGIN DEAD;
+<B>[\n] BEGIN INITIAL; {printf("accept integer");}
+<C>[^\n] BEGIN DEAD;
+<C>[ \n] BEGIN INITIAL; {printf("accept float ");}
+<D>[^\n] BEGIN DEAD;
+<D>[ \n] BEGIN INITIAL; {printf("accept identifiers ");}
+<DEAD>[ ^\n] BEGIN DEAD;
+<DEAD>[\n] BEGIN INITIAL;  { printf("Invalid Token\n"); }
+%%
+int main()
+{
+    printf("Enter input:\n");
+    yylex();
+    return 0;
+}
+int yywrap()
+{
+    return 1;
+} 
