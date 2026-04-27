@@ -1,0 +1,38 @@
+//parser.y
+%{
+#include <stdio.h>
+#include <stdlib.h>
+int yylex();
+void yyerror(const char *s);
+%}
+%%
+S : A B        { printf("Accepted\n"); }
+  ;
+A : 'a' A
+  | 'a'
+  ;
+B : 'b' B
+  | 'b'
+  ;
+%%
+int main(){
+    printf("Enter string:\n");
+    yyparse();
+    return 0;
+}
+void yyerror(const char *s){
+    printf("Rejected\n");
+}
+
+//lexer.l
+%{
+#include "y.tab.h"
+%}
+
+%%
+a    { return 'a'; }
+b    { return 'b'; }
+\n   { return 0; }
+[ \t] { }
+.    { return yytext[0]; }
+%%
