@@ -1,0 +1,25 @@
+%{
+#include<stdio.h>
+%}
+%s B C
+%%
+<INITIAL>0        BEGIN B;
+<INITIAL>1        BEGIN INITIAL;
+<INITIAL>\n       BEGIN INITIAL; { printf("not accepted"); }
+<B>0              BEGIN C;
+<B>1              BEGIN INITIAL;
+<B>\n             BEGIN B; { printf("not accepted"); }
+<C>0              BEGIN C;
+<C>1              BEGIN C;
+<C>\n             BEGIN C; { printf("accepted"); }
+%%
+int yywrap()
+{
+    return 1;
+}
+int main()
+{
+    printf("enter input");
+    yylex();
+    return 0;
+}
