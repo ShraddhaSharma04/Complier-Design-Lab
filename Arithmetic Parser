@@ -1,0 +1,64 @@
+exp.l
+%{
+#include "y.tab.h"
+%}
+
+%%
+[0-9]+      { return NUMBER; }
+[a-zA-Z]+   { return ID; }
+[+\-*/()]   { return yytext[0]; }
+[ \t\n]     ;
+.           { return yytext[0]; }
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+exp.y
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int yylex();
+void yyerror(char *s);
+%}
+
+%token NUMBER ID
+
+%%
+start:
+      expr        { printf("Valid Arithmetic Expression\n"); }
+      ;
+
+expr:
+      expr '+' term
+    | expr '-' term
+    | term
+    ;
+
+term:
+      term '*' factor
+    | term '/' factor
+    | factor
+    ;
+
+factor:
+      '(' expr ')'
+    | NUMBER
+    | ID
+    ;
+%%
+
+void yyerror(char *s)
+{
+    printf("Invalid Arithmetic Expression\n");
+}
+
+int main()
+{
+    printf("Enter arithmetic expression: ");
+    yyparse();
+    return 0;
+}
